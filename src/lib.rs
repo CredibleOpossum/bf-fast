@@ -208,8 +208,12 @@ fn execute(program: &[Instructions], print_live: bool) -> String {
     String::from_utf8(output).unwrap()
 }
 
+pub fn get_code(source: &str) -> Vec<Instructions> {
+    compile(&optimize(&minify(source)))
+}
+
 pub fn evaluate(source: &str, print_live: bool) -> String {
-    execute(&compile(&optimize(&minify(source))), print_live)
+    execute(&get_code(&source), print_live)
 }
 
 #[cfg(test)]
