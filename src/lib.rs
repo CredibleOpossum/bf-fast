@@ -1,6 +1,6 @@
 use std::str;
 
-enum Instructions {
+pub enum Instructions {
     PointerRight(usize),
     PointerLeft(usize),
 
@@ -38,7 +38,7 @@ fn optimize(source: &str) -> String {
         .replace("[>]", "r");
 }
 
-fn compile(source: &str) -> Vec<Instructions> {
+pub fn compile(source: &str) -> Vec<Instructions> {
     let mut program = Vec::new();
     let characters = source.as_bytes();
     let mut position = 0;
