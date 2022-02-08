@@ -61,8 +61,8 @@ pub fn compile(source: &str) -> Vec<Instructions> {
                     position += 1;
                 }
                 match value {
-                    x if x > 0 => Instructions::PointerLeft(value as usize),
-                    x if x < 0 => Instructions::PointerRight(value.abs() as usize),
+                    x if x > 0 => Instructions::PointerRight(value as usize),
+                    x if x < 0 => Instructions::PointerLeft(value.abs() as usize),
                     _ => break,
                 }
             }
@@ -152,9 +152,9 @@ fn execute(program: &[Instructions], print_live: bool) -> String {
 
     while program_pos != program.len() {
         match program[program_pos] {
-            Instructions::PointerLeft(num) => pointer_pos += num,
+            Instructions::PointerRight(num) => pointer_pos += num,
 
-            Instructions::PointerRight(num) => pointer_pos -= num,
+            Instructions::PointerLeft(num) => pointer_pos -= num,
 
             Instructions::Add(num) => {
                 memory[pointer_pos] = memory[pointer_pos].wrapping_add(num);
