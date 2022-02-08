@@ -27,15 +27,15 @@ fn minify(source: &str) -> String {
             _ => {}
         }
     }
-    return minified.into_iter().collect();
+    minified.into_iter().collect()
 }
 
 fn optimize(source: &str) -> String {
-    return source
+    source
         .replace("[-]", "c")
         .replace("[+]", "c")
         .replace("[<]", "l")
-        .replace("[>]", "r");
+        .replace("[>]", "r")
 }
 
 pub fn compile(source: &str) -> Vec<Instructions> {
@@ -82,12 +82,10 @@ pub fn compile(source: &str) -> Vec<Instructions> {
                     }
                     position += 1;
                 }
-                if value > 0 {
-                    Instructions::Add(value as u8)
-                } else if value < 0 {
-                    Instructions::Sub(value.abs() as u8)
-                } else {
-                    break;
+                match value {
+                    num if num > 0 => Instructions::Add(value as u8),
+                    num if num < 0 => Instructions::Sub(value.abs() as u8),
+                    _ => break,
                 }
             }
             '.' => Instructions::PutChar, // These can be converted directly
@@ -143,10 +141,10 @@ pub fn compile(source: &str) -> Vec<Instructions> {
             _ => continue,
         }
     }
-    return program;
+    program
 }
 
-fn execute(program: &Vec<Instructions>, print_live: bool) -> String {
+fn execute(program: &[Instructions], print_live: bool) -> String {
     let mut memory: [u8; 30_000] = [0; 30_000];
     let mut program_pos: usize = 0;
     let mut pointer_pos: usize = 0;
@@ -207,17 +205,16 @@ fn execute(program: &Vec<Instructions>, print_live: bool) -> String {
         }
         program_pos += 1;
     }
-    return String::from_utf8(output).unwrap();
+    String::from_utf8(output).unwrap()
 }
 
 pub fn evaluate(source: &str, print_live: bool) -> String {
-    return execute(&compile(&optimize(&minify(&source))), print_live);
+    execute(&compile(&optimize(&minify(source))), print_live)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    
     #[test]
     fn hello_world() {
         assert_eq!(evaluate("++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.", false), "Hello World!\n");
